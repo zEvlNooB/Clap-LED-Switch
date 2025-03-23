@@ -1,0 +1,24 @@
+const int micPin = 2;    // Microphone sensor output pin
+const int ledPin = 4;   // LED pin
+bool ledState = false;   // Tracks the LED state
+unsigned long lastClapTime = 0;
+const unsigned long debounceDelay = 100;  // Debounce delay for clap
+
+void setup() {
+  pinMode(micPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, LOW);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int clap = digitalRead(micPin);  // Read microphone sensor value
+
+  if (clap == HIGH && (millis() - lastClapTime > debounceDelay)) {
+    ledState = !ledState;  // Toggle LED state
+    digitalWrite(ledPin, ledState);  // Update LED
+    lastClapTime = millis();
+    Serial.println("Clap detected!");
+    delay(10);  // Short delay to avoid false triggers
+  }
+}
